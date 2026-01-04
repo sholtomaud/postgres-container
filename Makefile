@@ -6,15 +6,15 @@ PWD=$(shell pwd)
 .PHONY: build up down logs clean
 
 build:
-	docker build -t $(IMAGE_NAME) .
+	container build -t $(IMAGE_NAME) .
 
 up:
-	-docker stop $(CONTAINER_NAME) >/dev/null 2>&1 || true
-	-docker rm $(CONTAINER_NAME) >/dev/null 2>&1 || true
+	-container stop $(CONTAINER_NAME)
+	-container rm $(CONTAINER_NAME)
 	# Create the local data directory if it doesn't exist
 	mkdir -p $(PWD)/db_data
 	# Use the absolute path for the volume
-	docker run \
+	container run \
 		--detach \
 		--name $(CONTAINER_NAME) \
 		-p 5000:5000 \
@@ -27,11 +27,11 @@ up:
 	@echo "------------------------------------------------"
 
 down:
-	-docker stop $(CONTAINER_NAME) >/dev/null 2>&1 || true
-	-docker rm $(CONTAINER_NAME) >/dev/null 2>&1 || true
+	-container stop $(CONTAINER_NAME)
+	-container rm $(CONTAINER_NAME)
 
 logs:
-	docker logs -f $(CONTAINER_NAME)
+	container logs -f $(CONTAINER_NAME)
 
 clean: down
 	@echo "Removing local database data..."
