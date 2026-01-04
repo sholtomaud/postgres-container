@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, request, send_from_directory
 import psycopg2
 
@@ -6,7 +7,10 @@ app = Flask(__name__, static_folder="static")
 
 def get_db_connection():
     return psycopg2.connect(
-        dbname="mydb", user="user", password="password", host="localhost"
+        dbname=os.environ.get("POSTGRES_DB", "mydb"),
+        user=os.environ.get("POSTGRES_USER", "app_user"),
+        password=os.environ.get("POSTGRES_PASSWORD", "password"),
+        host=os.environ.get("POSTGRES_HOST", "localhost"),
     )
 
 
