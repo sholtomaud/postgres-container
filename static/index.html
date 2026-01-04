@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h1>JSON API Guestbook</h1>
+    <input id="name" placeholder="Name"><br>
+    <textarea id="msg" placeholder="Message"></textarea><br>
+    <button onclick="saveData()">Send to Postgres</button>
+
+    <div id="entries"></div>
+
+    <script>
+        async function loadData() {
+            const res = await fetch('/api/guestbook');
+            const data = await res.json();
+            document.getElementById('entries').innerHTML = data.map(e =>
+                `<p><b>${e.name}</b>: ${e.message}</p>`
+            ).join('');
+        }
+
+        async function saveData() {
+            const name = document.getElementById('name').value;
+            const message = document.getElementById('msg').value;
+            await fetch('/api/guestbook', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, message })
+            });
+            loadData();
+        }
+
+        loadData(); // Initial load
+    </script>
+</body>
+
+</html>
