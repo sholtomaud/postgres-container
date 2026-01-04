@@ -3,7 +3,7 @@ CONTAINER_NAME=my-app-instance
 # Get the absolute path of the current directory
 PWD=$(shell pwd)
 
-.PHONY: build up down
+.PHONY: build up down logs clean
 
 build:
 	container build -t $(IMAGE_NAME) .
@@ -17,16 +17,22 @@ up:
 	container run \
 		--detach \
 		--name $(CONTAINER_NAME) \
+		-p 5000:5000 \
 		--volume $(PWD)/db_data:/var/lib/postgresql/data \
 		$(IMAGE_NAME)
 	@echo "------------------------------------------------"
-	@echo "Container is starting!"
-	@echo "Run 'container ls' to find the IP (ADDR column)."
+	@echo "Container is running!"
+	@echo "Access the app at http://localhost:5000"
+	@echo "Run 'make logs' to see the container logs."
 	@echo "------------------------------------------------"
 
 down:
 	-container stop $(CONTAINER_NAME)
 	-container rm $(CONTAINER_NAME)
 
+logs:
+	container logs -f $(CONTAINER_NAME)
+
 clean: down
-	-container volume rm $(VOLUME_NAME)
+	@echo "Removing local database data..."
+	rm -rf $(PWD)/db_data

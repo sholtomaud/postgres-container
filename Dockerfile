@@ -17,5 +17,14 @@ RUN pip install flask psycopg2-binary
 COPY . .
 RUN chmod +x /app/entrypoint.sh
 
+# Set default PostgreSQL credentials
+ENV POSTGRES_DB=mydb
+ENV POSTGRES_USER=app_user
+ENV POSTGRES_PASSWORD=password
+
 EXPOSE 5000
 ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Add a health check to verify the app is running
+HEALTHCHECK --interval=5s --timeout=3s \
+  CMD curl -f http://localhost:5000/ || exit 1
