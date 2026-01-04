@@ -17,7 +17,6 @@ up:
 	container run \
 		--detach \
 		--name $(CONTAINER_NAME) \
-		-p 5000:5000 \
 		--volume $(PWD)/db_data:/var/lib/postgresql/data \
 		$(IMAGE_NAME)
 	@echo "------------------------------------------------"
